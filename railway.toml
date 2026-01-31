@@ -1,0 +1,17 @@
+[build]
+# Nixpacks automatically detects PHP, but we specify custom steps here
+builder = "nixpacks"
+# Install dependencies and build frontend assets
+buildCommand = "composer install --no-dev && npm install && npm run build"
+
+[deploy]
+# Ensure the database is ready before the app goes live
+preDeployCommand = "php artisan migrate --force"
+# The standard command to start a Laravel app on Railway
+startCommand = "php artisan serve --host=0.0.0.0 --port=$PORT"
+
+[variables]
+# Essential Laravel production settings
+APP_ENV = "production"
+APP_DEBUG = "false"
+LOG_CHANNEL = "stderr" # Standard for Railway to capture logs
