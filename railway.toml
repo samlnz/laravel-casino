@@ -1,0 +1,9 @@
+[project]
+name = "laravel-casino-frontend"
+
+[build]
+# If Railway detects a Dockerfile it will use it. This section is a placeholder.
+
+[deploy]
+# Deploy as a static site (or via the Dockerfile above)
+type = "docker"
