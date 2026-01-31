@@ -1,18 +1,28 @@
-# Build stage: install deps and build
-FROM node:18-alpine AS builder
+# Dockerfile
+
+# Specify the base image
+FROM node:14
+
+# Set the working directory
 WORKDIR /app
 
-# Copy package files from casino and install deps
-COPY casino/package*.json ./
-RUN npm ci
+# Copy package.json and package-lock.json
+COPY package*.json ./
 
-# Copy the casino frontend & build
-COPY casino/ ./
+# Install dependencies
+RUN npm ci --silent || npm install --silent
+
+# Copy the rest of the application files
+COPY . .
+
+# Build the frontend
 RUN npm run build
 
-FROM node:18-alpine AS serve
-WORKDIR /app
-RUN npm i -g http-server
-COPY --from=builder /app/public ./public
-EXPOSE 3000
-CMD ["sh","-c","http-server public -p ${PORT:-3000}"]
+# Install http-server to serve the public directory
+RUN npm install -g http-server
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Command to run the application
+CMD ["http-server", "public", "-p", "8080"]
